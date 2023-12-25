@@ -21,6 +21,7 @@ const createTour = async (req, res) => {
 const getAllTours = async (req, res) => {
     const queries = {}
 
+    // Pagination
     if (req.query.page) {
         const { page = 1, limit = 3 } = req.query
 
@@ -29,7 +30,23 @@ const getAllTours = async (req, res) => {
         queries.limit = parseInt(limit)
     }
 
-    const tours = await Tour.find()
+    // Sort
+    if (req.query.sort) {
+        const { sort } = req.query
+        queries.sort = sort
+    }
+
+    // Select
+    if (req.query.fields) {
+        const { fields } = req.query
+        queries.fields = fields
+    }
+
+    console.log(queries);
+
+    const tours = await Tour.find({})
+        .select(queries.fields)
+        .sort(queries.sort)
         .skip(queries.skip)
         .limit(queries.limit)
     const totalTours = await Tour.countDocuments()
