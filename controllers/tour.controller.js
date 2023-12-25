@@ -19,7 +19,6 @@ const createTour = async (req, res) => {
 }
 
 const getAllTours = async (req, res) => {
-    console.log(req.query);
     const queries = {}
 
     if (req.query.page) {
@@ -70,4 +69,21 @@ const getSingleTour = async (req, res) => {
     })
 }
 
-module.exports = { getAllTours, createTour, getSingleTour }
+const getCheapestTour = async (req, res) => {
+    const tour = await Tour.find().sort({ price: 'asc' }).limit(3)
+
+
+    if (!tour) {
+        return res.status(404).json({
+            success: false,
+            message: 'No tour found'
+        })
+    }
+
+    res.status(200).json({
+        success: true,
+        data: tour
+    })
+}
+
+module.exports = { getAllTours, createTour, getSingleTour, getCheapestTour }
