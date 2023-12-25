@@ -51,4 +51,23 @@ const getAllTours = async (req, res) => {
     })
 }
 
-module.exports = { getAllTours, createTour }
+const getSingleTour = async (req, res) => {
+    const { id } = req.params
+    const tour = await Tour.findById(id)
+
+    if (!tour) {
+        return res.status(404).json({
+            success: false,
+            message: 'No tour found'
+        })
+    }
+
+
+
+    res.status(200).json({
+        success: true,
+        data: tour
+    })
+}
+
+module.exports = { getAllTours, createTour, getSingleTour }
