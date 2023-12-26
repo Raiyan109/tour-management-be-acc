@@ -32,14 +32,14 @@ const getAllTours = async (req, res) => {
 
     // Sort
     if (req.query.sort) {
-        const { sort } = req.query
-        queries.sort = sort
+        const sortBy = req.query.sort
+        queries.sort = sortBy
     }
 
-    // Select
+    // Projection with Select
     if (req.query.fields) {
         const { fields } = req.query
-        queries.fields = fields
+        queries.fields = fields.split(',').join(' ')
     }
 
     console.log(queries);
