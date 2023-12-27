@@ -32,6 +32,7 @@ const getAllTours = async (req, res) => {
 
     // Sort
     if (req.query.sort) {
+        // const sortBy = req.query.sort || 'name'
         const sortBy = req.query.sort
         queries.sort = sortBy
     }
@@ -42,9 +43,10 @@ const getAllTours = async (req, res) => {
         queries.fields = fields.split(',').join(' ')
     }
 
-    console.log(queries);
+    // Search
+    const search = req.query.search || ''
 
-    const tours = await Tour.find({})
+    const tours = await Tour.find({ name: { $regex: search, $options: 'i' } })
         .select(queries.fields)
         .sort(queries.sort)
         .skip(queries.skip)
