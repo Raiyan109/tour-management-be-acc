@@ -31,11 +31,19 @@ const getAllTours = async (req, res) => {
     }
 
     // Sort
-    if (req.query.sort) {
-        // const sortBy = req.query.sort || 'name'
-        const sortBy = req.query.sort
-        queries.sort = sortBy
+    // if (req.query.sort) {
+    //     const sortBy = req.query.sort
+    //     queries.sort = sortBy
+    // }
+    let sortBy = {};
+
+    if (req.query.sort && ['price', '-price'].includes(req.query.sort)) {
+        sortBy.price = req.query.sort.startsWith('-') ? 'desc' : 'asc';
+    } else {
+        sortBy.price = 'asc'; // Default sorting by price in ascending order
     }
+    console.log('Request query sort:', req.query.sort);
+    console.log('SortBy:', sortBy);
 
     // Projection with Select
     if (req.query.fields) {
@@ -48,7 +56,7 @@ const getAllTours = async (req, res) => {
 
     const tours = await Tour.find({ name: { $regex: search, $options: 'i' } })
         .select(queries.fields)
-        .sort(queries.sort)
+        .sort(sortBy)
         .skip(queries.skip)
         .limit(queries.limit)
     const totalTours = await Tour.countDocuments()
